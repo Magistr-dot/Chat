@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Chat Vol4at</string>
+    <string name="send">send</string>
+    <string name="send_image">Send image</string>
+</resources>
