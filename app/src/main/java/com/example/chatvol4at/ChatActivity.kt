@@ -22,8 +22,9 @@ import kotlin.collections.ArrayList
 const val RC_IMAGE_PICKER = 123
 
 private lateinit var auth: FirebaseAuth
+
 class ChatActivity : AppCompatActivity() {
-    private val storage :FirebaseStorage = FirebaseStorage.getInstance()
+    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
     private var chatImagesStorage = storage.reference.child("chat_images")
     var userName = ""
     private val database = Firebase.database
@@ -31,7 +32,8 @@ class ChatActivity : AppCompatActivity() {
 
 
     private val userRef = database.reference.child("users")
-   lateinit var recipientUserId :String
+    lateinit var recipientUserId: String
+    lateinit var recipientUserName: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -41,11 +43,10 @@ class ChatActivity : AppCompatActivity() {
 
         val intent = intent
         recipientUserId = intent.getStringExtra("recipientUserId").toString()
-        userName = intent?.getStringExtra("userName")?: "Default"
+        userName = intent?.getStringExtra("userName") ?: "Default"
+        recipientUserName = intent.getStringExtra("recipientUserName").toString()
 
-
-
-
+        title = "Chat with $recipientUserName"
         val list = ArrayList<ChatMessage>()
         val adapter = ChatMessageAdapter(this, R.layout.message, list)
         messageListView.adapter = adapter
@@ -81,20 +82,20 @@ class ChatActivity : AppCompatActivity() {
         sendPhoto.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
-            intent.putExtra(Intent.EXTRA_LOCAL_ONLY,true)
-            startActivityForResult(Intent.createChooser(intent,"Choose an image"),RC_IMAGE_PICKER)
+            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+            startActivityForResult(Intent.createChooser(intent, "Choose an image"), RC_IMAGE_PICKER)
 
         }
         val userEventListener: ChildEventListener
-        userEventListener =  object :ChildEventListener {
+        userEventListener = object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val user = snapshot.getValue(User::class.java)
                 if (user != null) {
                     if (user.id == FirebaseAuth.getInstance().currentUser?.uid) {
-                        userName= user.nickname
+                        userName = user.nickname
                     }
                 }
-        }
+            }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 TODO("Not yet implemented")
@@ -114,12 +115,16 @@ class ChatActivity : AppCompatActivity() {
 
         }
         userRef.addChildEventListener(userEventListener)
-    val childEventListener: ChildEventListener
-        childEventListener = object :ChildEventListener {
+        val childEventListener: ChildEventListener
+        childEventListener = object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val message = snapshot.getValue(ChatMessage::class.java)
                 if (message != null) {
-                    if((message.sender == auth.currentUser?.uid && message.recipient == recipientUserId) || (message.recipient == auth.currentUser?.uid && message.sender == recipientUserId) ) {
+                    if (message.sender == auth.currentUser?.uid && message.recipient == recipientUserId) {
+                        message.isMine = true
+                        adapter.add(message)
+                    }else if  (message.recipient == auth.currentUser?.uid && message.sender == recipientUserId)  {
+                        message.isMine = false
                         adapter.add(message)
                     }
                 }
@@ -153,9 +158,10 @@ class ChatActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            R.id.sign_out -> {FirebaseAuth.getInstance().signOut()
-                startActivity(Intent(this,SignInActivity::class.java))
+        when (item.itemId) {
+            R.id.sign_out -> {
+                FirebaseAuth.getInstance().signOut()
+                startActivity(Intent(this, SignInActivity::class.java))
                 return true
             }
         }
@@ -166,7 +172,7 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == RC_IMAGE_PICKER && resultCode == RESULT_OK) {
+        if (requestCode == RC_IMAGE_PICKER && resultCode == RESULT_OK) {
             val selectedImageUri = data?.data
             val imageRef = selectedImageUri?.lastPathSegment?.let { chatImagesStorage.child(it) }
 

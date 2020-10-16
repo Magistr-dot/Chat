@@ -113,6 +113,7 @@ class UserList : AppCompatActivity() {
     fun goToChat(position:Int) {
         val intent = Intent(this, ChatActivity::class.java)
         intent.putExtra("recipientUserId", userArray[position].id)
+        intent.putExtra("recipientUserName", userArray[position].nickname + "11")
         intent.putExtra("userName", userArray[position].nickname)
         startActivity(intent)
     }

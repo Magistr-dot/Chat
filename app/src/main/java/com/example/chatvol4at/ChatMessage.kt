@@ -6,5 +6,6 @@ class ChatMessage() {
     var imageUrl: String? = null
     var sender = ""
     var recipient = ""
+    var isMine = true
 
 }
