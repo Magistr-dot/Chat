@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -91,8 +92,13 @@ class UserList : AppCompatActivity() {
 
     private fun buildRecycleView() {
         userListRecycle.setHasFixedSize(true)
-        var userLayoutManager = LinearLayoutManager(this)
+        userListRecycle.addItemDecoration(DividerItemDecoration(
+            userListRecycle.context,
+            LinearLayoutManager.VERTICAL
+        ))
+        val userLayoutManager = LinearLayoutManager(this)
         userAdapter = UserAdapter(userArray)
+
 
         userListRecycle.layoutManager = userLayoutManager
         userListRecycle.adapter = userAdapter

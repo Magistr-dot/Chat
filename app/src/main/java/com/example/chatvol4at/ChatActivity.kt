@@ -24,23 +24,24 @@ const val RC_IMAGE_PICKER = 123
 private lateinit var auth: FirebaseAuth
 class ChatActivity : AppCompatActivity() {
     private val storage :FirebaseStorage = FirebaseStorage.getInstance()
-    var chatImagesStorage = storage.reference.child("chat_images")
+    private var chatImagesStorage = storage.reference.child("chat_images")
     var userName = ""
     private val database = Firebase.database
     private val myRef = database.reference.child("message")
 
 
     private val userRef = database.reference.child("users")
+   lateinit var recipientUserId :String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         auth = Firebase.auth
 
-        val intent = intent
-        var recipientUserId = intent.getStringExtra("recipientUserId")
-        userName = intent?.getStringExtra("userName")?: "Default"
 
+        val intent = intent
+        recipientUserId = intent.getStringExtra("recipientUserId").toString()
+        userName = intent?.getStringExtra("userName")?: "Default"
 
 
 
@@ -118,7 +119,7 @@ class ChatActivity : AppCompatActivity() {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val message = snapshot.getValue(ChatMessage::class.java)
                 if (message != null) {
-                    if(message.sender == auth.currentUser?.uid && message.recipient == recipientUserId) {
+                    if((message.sender == auth.currentUser?.uid && message.recipient == recipientUserId) || (message.recipient == auth.currentUser?.uid && message.sender == recipientUserId) ) {
                         adapter.add(message)
                     }
                 }
@@ -185,10 +186,12 @@ class ChatActivity : AppCompatActivity() {
             }?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val downloadUri = task.result
-                    var chatMessage = ChatMessage()
+                    val chatMessage = ChatMessage()
                     chatMessage.imageUrl = downloadUri.toString()
                     chatMessage.name = userName
                     chatMessage.text = ""
+                    chatMessage.sender = auth.currentUser?.uid.toString()
+                    chatMessage.recipient = recipientUserId
                     myRef.push().setValue(chatMessage)
                 } else {
                     // Handle failures
