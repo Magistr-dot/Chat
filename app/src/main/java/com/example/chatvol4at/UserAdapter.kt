@@ -11,34 +11,36 @@ class UserAdapter(user: ArrayList<User>) :
 
     RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
-    private var users = ArrayList <User>()
+    private var users =user
     private lateinit var listener: OnUserClickListener
 
     interface OnUserClickListener {
 
         fun onUserClick(position:Int)
 
+
     }
-    fun setOnClickListener(listener: OnUserClickListener) {
+    fun setOnUserClickListener(listener: OnUserClickListener) {
         this.listener = listener
     }
 
+////////////////////////
+    class UserViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
 
-    class UserViewHolder(v: View, private val listener: OnUserClickListener?) : RecyclerView.ViewHolder(v), View.OnClickListener {
 
-        private var view: View = v
+    private var view: View = v
         init {
-            v.setOnClickListener(this)
+            view.setOnClickListener(this)
         }
 
 
 
         override fun onClick(v: View?) {
-            if(listener != null) {
+
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    listener.onUserClick(position)
-                }
+                 //   listener?.onUserClick(position)
+
             }
 
         }
@@ -50,7 +52,7 @@ class UserAdapter(user: ArrayList<User>) :
         viewType: Int
     ): UserViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item, parent, false)
-        return UserViewHolder(view, listener)
+        return UserViewHolder(view)
     }
 
 
