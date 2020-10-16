@@ -140,7 +140,7 @@ class SignInActivity : AppCompatActivity() {
         if (fireBaseUser != null) {
             user.id = fireBaseUser.uid
             user.email = fireBaseUser.email.toString()
-            user.nickname  = nameEditText.text.toString()
+            user.nickname = nameEditText.text.toString()
         }
         users.push().setValue(user)
     }

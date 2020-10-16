@@ -3,7 +3,9 @@ package com.example.chatvol4at
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.message.view.*
 import kotlinx.android.synthetic.main.user_item.view.*
 import java.util.ArrayList
 //
@@ -12,7 +14,7 @@ class UserAdapter(user: ArrayList<User>) :
     RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     private var users =user
-    private lateinit var listener: OnUserClickListener
+    lateinit var listener: OnUserClickListener
 
     interface OnUserClickListener {
 
@@ -22,10 +24,11 @@ class UserAdapter(user: ArrayList<User>) :
     }
     fun setOnUserClickListener(listener: OnUserClickListener) {
         this.listener = listener
+
     }
 
 ////////////////////////
-    class UserViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
+    class UserViewHolder(v: View ) : RecyclerView.ViewHolder(v), View.OnClickListener {
 
 
     private var view: View = v
@@ -39,7 +42,10 @@ class UserAdapter(user: ArrayList<User>) :
 
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                 //   listener?.onUserClick(position)
+                    if (v != null) {
+                        Toast.makeText(v.context, "${position}",Toast.LENGTH_SHORT ).show()
+                    }
+                  // listener?.onUserClick(position)
 
             }
 
@@ -69,3 +75,5 @@ class UserAdapter(user: ArrayList<User>) :
 
 
 }
+
+

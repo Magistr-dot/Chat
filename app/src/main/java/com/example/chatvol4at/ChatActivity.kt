@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -17,10 +18,11 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.collections.ArrayList
+
 const val RC_IMAGE_PICKER = 123
 
-
-class MainActivity : AppCompatActivity() {
+private lateinit var auth: FirebaseAuth
+class ChatActivity : AppCompatActivity() {
     private val storage :FirebaseStorage = FirebaseStorage.getInstance()
     var chatImagesStorage = storage.reference.child("chat_images")
     var userName = ""
@@ -33,12 +35,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
+        auth = Firebase.auth
 
         val intent = intent
-
-
-
+        var recipientUserId = intent.getStringExtra("recipientUserId")
         userName = intent?.getStringExtra("userName")?: "Default"
 
 
@@ -71,6 +71,8 @@ class MainActivity : AppCompatActivity() {
             ourMessage.imageUrl = null
             ourMessage.name = userName
             ourMessage.text = messageIdText.text.toString()
+            ourMessage.sender = auth.currentUser?.uid.toString()
+            ourMessage.recipient = recipientUserId.toString()
             myRef.push().setValue(ourMessage)
             messageIdText.setText("")
 
@@ -115,7 +117,11 @@ class MainActivity : AppCompatActivity() {
         childEventListener = object :ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val message = snapshot.getValue(ChatMessage::class.java)
-                adapter.add(message)
+                if (message != null) {
+                    if(message.sender == auth.currentUser?.uid && message.recipient == recipientUserId) {
+                        adapter.add(message)
+                    }
+                }
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
@@ -160,13 +166,13 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == RC_IMAGE_PICKER && resultCode == RESULT_OK) {
-            var selectedImageUri = data?.data
-            var imageRef = selectedImageUri?.lastPathSegment?.let { chatImagesStorage.child(it) }
+            val selectedImageUri = data?.data
+            val imageRef = selectedImageUri?.lastPathSegment?.let { chatImagesStorage.child(it) }
 
             var uploadTask = selectedImageUri?.let { imageRef?.putFile(it) }
 
             if (imageRef != null) {
-                uploadTask = selectedImageUri?.let { imageRef.putFile(it) }
+                uploadTask = selectedImageUri.let { imageRef.putFile(it) }
             }
 
             val urlTask = uploadTask?.continueWithTask { task ->

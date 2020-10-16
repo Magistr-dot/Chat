@@ -4,4 +4,7 @@ class ChatMessage() {
     lateinit var text: String
     lateinit var name: String
     var imageUrl: String? = null
+    var sender = ""
+    var recipient = ""
+
 }
