@@ -19,7 +19,7 @@
             android:id="@+id/bubbleText"
             android:maxWidth="100dp"
             android:padding="5dp"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/common_google_signin_btn_text_dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>

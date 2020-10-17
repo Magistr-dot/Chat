@@ -31,7 +31,7 @@ class ChatMessageAdapter(context: Activity, resource: Int, list: ArrayList<ChatM
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var  viewHolder= convertView?.let { ViewHolder(it) }
+ /*       var  viewHolder= convertView?.let { ViewHolder(it) }
         if (viewHolder != null) {
             var layoutInflater =
                 activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -79,24 +79,32 @@ class ChatMessageAdapter(context: Activity, resource: Int, list: ArrayList<ChatM
             }
 
         }
-        return convertView ?: vi.inflate(R.layout.message, parent, false)
-      //  val retView: View = vi.inflate(R.layout.message, parent, false)
-/*
+        return convertView ?: vi.inflate(R.layout.message, parent, false)*/
+        var layoutRes = 0
+        var viewType = getItemViewType(position)
+        layoutRes = if (viewType == 0) {
+            R.layout.your_message_item
+        } else {
+            R.layout.my_message_item
+        }
+
+        val retView: View = vi.inflate(layoutRes, parent, false)
         val currentMessage = getItem(position)
         if (currentMessage != null) {
             if (currentMessage.imageUrl == null) {
-                retView.photo.visibility = View.GONE
-                retView.textView.visibility = View.VISIBLE
-                retView.textView.text = currentMessage.text
+                retView.photoImage.visibility = View.GONE
+                retView.bubbleText.visibility = View.VISIBLE
+                retView.bubbleText.text = currentMessage.text
             } else {
-                retView.photo.visibility = View.VISIBLE
-                retView.textView.visibility = View.GONE
-                Glide.with(retView.photo.context).load(currentMessage.imageUrl).into(retView.photo)
+                retView.photoImage.visibility = View.VISIBLE
+                retView.bubbleText.visibility = View.GONE
+                Glide.with(retView.photoImage.context).load(currentMessage.imageUrl).into(retView.photoImage)
             }
-            retView.name.text = currentMessage.name*/
+//            retView.name.text = currentMessage.name
 
 
-
+        }
+        return retView
     }
 
     override fun getItemViewType(position: Int): Int {
