@@ -1,22 +1,22 @@
 package com.example.chatvol4at
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_user_list.*
+
 private lateinit var auth: FirebaseAuth
 class UserList : AppCompatActivity() {
-    lateinit var refDataBase: DatabaseReference
-    lateinit var userChildEventListener: ChildEventListener
+    private lateinit var refDataBase: DatabaseReference
+    private lateinit var userChildEventListener: ChildEventListener
     lateinit var userAdapter: UserAdapter
     var userArray = arrayListOf<User>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,8 +25,8 @@ class UserList : AppCompatActivity() {
 
         auth = Firebase.auth
 
-        var intent = intent
-        var userName = intent.getStringExtra("userName")
+        val intent = intent
+        intent.getStringExtra("userName")
         attachUserDatabaseReferenceListener()
         buildRecycleView()
 

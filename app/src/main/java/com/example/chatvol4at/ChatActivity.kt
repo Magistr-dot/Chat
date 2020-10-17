@@ -74,7 +74,7 @@ class ChatActivity : AppCompatActivity() {
             ourMessage.name = userName
             ourMessage.text = messageIdText.text.toString()
             ourMessage.sender = auth.currentUser?.uid.toString()
-            ourMessage.recipient = recipientUserId.toString()
+            ourMessage.recipient = recipientUserId
             myRef.push().setValue(ourMessage)
             messageIdText.setText("")
 

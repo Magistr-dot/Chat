@@ -7,25 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.message.view.*
 import kotlinx.android.synthetic.main.my_message_item.view.*
 
 
 class ChatMessageAdapter(context: Activity, resource: Int, list: ArrayList<ChatMessage>) :
     ArrayAdapter<ChatMessage>(context, resource, list) {
-    var resource: Int
-    var list: ArrayList<ChatMessage>
-    var vi: LayoutInflater
-    var activity: Activity
-
-    init {
-        this.list = list
-        this.activity = context
-    }
+    private var list: ArrayList<ChatMessage> = list
+    private var vi: LayoutInflater
 
 
     init {
-        this.resource = resource
         this.list = list
         this.vi = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     }
@@ -80,8 +71,8 @@ class ChatMessageAdapter(context: Activity, resource: Int, list: ArrayList<ChatM
 
         }
         return convertView ?: vi.inflate(R.layout.message, parent, false)*/
-        var layoutRes = 0
-        var viewType = getItemViewType(position)
+        val layoutRes: Int
+        val viewType = getItemViewType(position)
         layoutRes = if (viewType == 0) {
             R.layout.your_message_item
         } else {
@@ -109,7 +100,7 @@ class ChatMessageAdapter(context: Activity, resource: Int, list: ArrayList<ChatM
 
     override fun getItemViewType(position: Int): Int {
 
-        var flag = 0
+        val flag: Int
         val mMessage = list[position]
         flag = if (mMessage.isMine) {
             0
@@ -124,8 +115,4 @@ class ChatMessageAdapter(context: Activity, resource: Int, list: ArrayList<ChatM
         return 2
     }
 
-    class ViewHolder(view: View) {
-        var photo = view.photoImage
-        var text = view.bubbleText
-    }
 }

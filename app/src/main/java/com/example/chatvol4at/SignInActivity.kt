@@ -31,13 +31,13 @@ class SignInActivity : AppCompatActivity() {
         toggle.setOnClickListener {
             if (loginModeActive) {
                 loginModeActive = false
-                loginSignUpButton.text = "SIGN UP"
-                toggle.text = "Or, LOG IN"
+                loginSignUpButton.text = getString(R.string.sign)
+                toggle.text = getString(R.string.orLOG)
                 repeatPasswordEditText.visibility = EditText.VISIBLE
             } else {
                 loginModeActive = true
-                loginSignUpButton.text = "LOG IN"
-                toggle.text = "Or, SIGN UP"
+                loginSignUpButton.text = getString(R.string.LOG)
+                toggle.text = getString(R.string.orSIG)
                 repeatPasswordEditText.visibility = EditText.GONE
             }
         }
@@ -68,7 +68,6 @@ class SignInActivity : AppCompatActivity() {
                             if (task.isSuccessful) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "signInWithEmail:success")
-                                val user = auth.currentUser
                                 val intent = Intent(this, UserList::class.java)
                                 intent.putExtra("userName", nameEditText.text.toString())
                                 startActivity(intent)
@@ -136,7 +135,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun createUser(fireBaseUser: FirebaseUser?) {
-        var user = User()
+        val user = User()
         if (fireBaseUser != null) {
             user.id = fireBaseUser.uid
             user.email = fireBaseUser.email.toString()

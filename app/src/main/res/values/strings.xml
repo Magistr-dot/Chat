@@ -2,4 +2,8 @@
     <string name="app_name">Chat Vol4at</string>
     <string name="send">send</string>
     <string name="send_image">Send image</string>
+    <string name="sign">SIGN UP</string>
+    <string name="orLOG">Or, LOG IN</string>
+    <string name="LOG">LOG IN</string>
+    <string name="orSIG">Or, SIGN UP</string>
 </resources>
